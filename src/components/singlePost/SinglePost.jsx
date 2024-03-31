@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './singlePost.css';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const SinglePost = () => {
   const location = useLocation();
@@ -12,7 +13,6 @@ const SinglePost = () => {
     const getPost = async () => {
       const res = await axios.get('/posts/' + path);
       setPost(res.data);
-      console.log(res);
     };
     getPost();
   }, [path]);
@@ -32,7 +32,10 @@ const SinglePost = () => {
         </h1>
         <div className='singlePostInfo'>
           <span className='singlePostAuthor'>
-            Author: <b>{post.username}</b>
+            Author:
+            <Link className='link' to={`/?user=${post.username}`}>
+              <b>{post.username}</b>
+            </Link>
           </span>
           <span className='singlePostDate'>
             {new Date(post.createdAt).toDateString()}
