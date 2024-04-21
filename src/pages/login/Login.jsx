@@ -1,19 +1,43 @@
-import React from 'react';
-import './login.css';
+import React, { useContext, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { Context } from '../../context/auth/AuthContext';
+import './login.css';
+import axios from 'axios';
 
 const Login = () => {
+  const userRef = useRef();
+  const passwordRef = useRef();
+  const { user, dispatch, isFetching } = useContext(Context);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dispatch({ type: 'LOGIN_START' });
+    try {
+      const res = await axios.post('/auth/login', {
+        username: userRef.current.value,
+        password: passwordRef.current.value,
+      });
+
+      dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+    } catch (error) {
+      dispatch({ type: 'LOGIN_FAILURE' });
+      console.log(error);
+    }
+  };
+
+  console.log(user);
   return (
     <div className='login'>
       <span className='loginTitle'>LOGİN</span>
 
-      <form className='loginForm'>
-        <label htmlFor='emailInput'>Email</label>
+      <form className='loginForm' onSubmit={handleSubmit}>
+        <label htmlFor='usernameInput'>Username</label>
         <input
-          type='email'
-          placeholder='Enter your email...'
-          id='emailInput'
+          type='text'
+          placeholder='Enter your username...'
+          id='usernameInput'
           className='loginInput'
+          ref={userRef}
         />
 
         <label htmlFor='passwordInput'>Password</label>
@@ -22,9 +46,12 @@ const Login = () => {
           placeholder='Enter your password...'
           id='passwordInput'
           className='loginInput'
+          ref={passwordRef}
         />
 
-        <button className='loginButton'>LOGIN</button>
+        <button className='loginButton' type='submit' disabled={isFetching}>
+          LOGIN
+        </button>
       </form>
 
       <Link className='link' to='/register'>
