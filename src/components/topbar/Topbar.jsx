@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import './topbar.css';
+import { Context } from '../../context/auth/AuthContext';
 
 const Topbar = () => {
-  const user = false;
+  const { user } = useContext(Context);
   return (
     <div className='top'>
       <div className='topLeft'>
